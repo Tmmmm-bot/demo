@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>编辑运用检修能力</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+		<link rel="stylesheet" href="../css/font.css">
+		<link rel="stylesheet" href="../css/xadmin.css">
+		<script src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../js/xadmin.js"></script>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+	</head>
+	<body>
+		<div class="layui-fluid">
+			<div class="layui-row">
+
+				<form class="layui-form" lay-filter="edit">
+					<input type="hidden" name="id">
+					<div class="layui-form-item">
+						<label class="layui-form-label">
+							<span class="x-red">*</span>检修站名称
+						</label>
+						<div class="layui-input-inline">
+							<input type="text" name="maintenanceStationName" required lay-verify="required" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">
+							<span class="x-red">*</span>检修类型
+						</label>
+						<div class="layui-input-inline">
+							<select name="maintenanceType" required lay-verify="required">
+								<option value="一级修">一级修</option>
+								<option value="二级修">二级修</option>
+								<option value="三级修">三级修</option>
+								<option value="四级修">四级修</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">
+							<span class="x-red">*</span>检修线容量
+						</label>
+						<div class="layui-input-inline">
+							<input type="number" name="maintenanceLineCapacity" required lay-verify="required" placeholder="可同时检修动车组数量" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">
+							<span class="x-red">*</span>日检修能力
+						</label>
+						<div class="layui-input-inline">
+							<input type="number" name="dailyCapacity" required lay-verify="required" placeholder="辆/天" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">
+							<span class="x-red">*</span>月检修能力
+						</label>
+						<div class="layui-input-inline">
+							<input type="number" name="monthlyCapacity" required lay-verify="required" placeholder="辆/月" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">当前工作量</label>
+						<div class="layui-input-inline">
+							<input type="number" name="currentWorkload" placeholder="请输入当前工作量" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">检修线状态</label>
+						<div class="layui-input-inline">
+							<select name="maintenanceStatus">
+								<option value="0">空闲</option>
+								<option value="1">使用中</option>
+								<option value="2">维护中</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">当前检修动车组号</label>
+						<div class="layui-input-inline">
+							<input type="text" name="currentEmuNo" placeholder="请输入动车组号" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">检修开始时间</label>
+						<div class="layui-input-inline">
+							<input type="text" name="maintenanceStartTime" id="maintenanceStartTime" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">班组人数</label>
+						<div class="layui-input-inline">
+							<input type="number" name="teamMemberCount" placeholder="请输入班组人数" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">资质等级</label>
+						<div class="layui-input-inline">
+							<select name="qualificationLevel">
+								<option value="一级">一级</option>
+								<option value="二级">二级</option>
+								<option value="三级">三级</option>
+								<option value="四级">四级</option>
+								<option value="五级">五级</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">设备状态</label>
+						<div class="layui-input-inline">
+							<select name="equipmentStatus">
+								<option value="0">故障</option>
+								<option value="1">正常</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">质检状态</label>
+						<div class="layui-input-inline">
+							<select name="qualityCheckStatus">
+								<option value="0">未检查</option>
+								<option value="1">检查中</option>
+								<option value="2">已通过</option>
+								<option value="3">未通过</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">安全检查状态</label>
+						<div class="layui-input-inline">
+							<select name="safetyCheckStatus">
+								<option value="0">未检查</option>
+								<option value="1">检查中</option>
+								<option value="2">已通过</option>
+								<option value="3">未通过</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">备注</label>
+						<div class="layui-input-inline">
+							<textarea name="remark" placeholder="请输入备注" class="layui-textarea"></textarea>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label"></label>
+						<button class="layui-btn" lay-filter="edit" lay-submit>修改</button>
+					</div>
+				</form>
+
+			</div>
+		</div>
+		<script>
+			layui.use(['form', 'layer', 'laydate'], function() {
+				var form = layui.form;
+				var layer = layui.layer;
+				var laydate = layui.laydate;
+
+				//日期时间选择器
+				laydate.render({
+					elem: '#maintenanceStartTime'
+					,type: 'datetime'
+					,trigger: 'click'
+					,calendar: true
+					,format: 'yyyy-MM-dd HH:mm:ss'
+				});
+
+				//监听提交
+				form.on('submit(edit)', function(data) {
+					$.ajax({
+						type: "POST",
+						url: "http://localhost:8082/demo/maintenance-capacity/up",
+						data: data.field,
+						success: function(result) {
+							if(result.code === 0) {
+								layer.alert("修改成功", {
+									icon: 6
+								}, function() {
+									xadmin.close();
+									xadmin.father_reload();
+								});
+							} else {
+								layer.alert("修改失败", {
+									icon: 5
+								});
+							}
+						}
+					});
+					return false;
+				});
+			});
+
+			function child(data) {
+				// 填充表单数据
+				layui.form.val("edit", {
+					"id": data.id,
+					"maintenanceStationName": data.maintenanceStationName,
+					"maintenanceType": data.maintenanceType,
+					"maintenanceLineCapacity": data.maintenanceLineCapacity,
+					"dailyCapacity": data.dailyCapacity,
+					"monthlyCapacity": data.monthlyCapacity,
+					"currentWorkload": data.currentWorkload,
+					"maintenanceStatus": data.maintenanceStatus,
+					"currentEmuNo": data.currentEmuNo,
+					"maintenanceStartTime": data.maintenanceStartTime,
+					"teamMemberCount": data.teamMemberCount,
+					"qualificationLevel": data.qualificationLevel,
+					"equipmentStatus": data.equipmentStatus,
+					"qualityCheckStatus": data.qualityCheckStatus,
+					"safetyCheckStatus": data.safetyCheckStatus,
+					"remark": data.remark
+				});
+			}
+		</script>
+
+	</body>
+
+</html>

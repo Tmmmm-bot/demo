@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>欢迎页面-X-admin2.2</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+		<link rel="stylesheet" href="../css/font.css">
+		<link rel="stylesheet" href="../css/xadmin.css">
+		<script src="../lib/layui/layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="../js/xadmin.js"></script>
+		<script type="text/javascript" src="../js/bmob.js"></script>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+	</head>
+	<body>
+		<div class="layui-fluid">
+			<div class="layui-row">
+
+				<form class="layui-form" lay-filter="add">
+					<div class="layui-form-item">
+							<label for="username" class="layui-form-label">
+							  <span class="x-red">*</span>图片
+						  </label>
+							<div class="layui-input-inline">
+								<button type="button" class="layui-btn" id="test1">上传图片</button>
+								<div class="layui-form-mid layui-word-aux" style="po">
+									<div class="layui-upload-list">
+										<img class="layui-upload-img" style="width: 100px;" id="demo1">
+										<p id="demoText"></p>
+									</div>
+								</div>
+							</div>
+						
+						</div>
+					
+						
+						<div class="layui-form-item">
+							<label for="username" class="layui-form-label">
+							  <span class="x-red">*</span>标题
+						  </label>
+							<div class="layui-input-inline">
+								<input type="text" id="username" name="username" required="" lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">
+								<span class="x-red">*</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label for="money" class="layui-form-label">
+							  <span class="x-red">*</span>售价
+						  </label>
+							<div class="layui-input-inline">
+								<input type="text" id="money" name="money" required="" lay-verify="required" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid layui-word-aux">
+								<span class="x-red">*</span>
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">分类</label>
+							<div class="layui-input-inline">
+							  <select name="mshopetype" id="mshopetype"  lay-filter="aihao">
+							  </select>
+							</div>
+						  </div>
+						<div class="layui-form-item">
+									<label for="username" class="layui-form-label">
+									  <span class="x-red">*</span>内容
+								  </label>
+								  
+									<div class="layui-input-inline" style="width: 100%;">
+										 <textarea placeholder="请输入内容"  id="name" name="name" required="" lay-verify="required" autocomplete="off"  class="layui-textarea"></textarea>
+									</div>
+									<div class="layui-form-mid layui-word-aux">
+										<span class="x-red">*</span>
+									</div>
+								</div>
+					
+					<div class="layui-form-item">
+						<label for="s" class="layui-form-label">
+						</label>
+						<button class="layui-btn" lay-filter="add" lay-submit="">
+							修改
+						</button>
+					</div>
+				</form>
+
+			</div>
+		</div>
+		<script>
+			var objectid = "";
+			var imgUrl = "";
+			var form;
+			layui.use(['form', 'layer', 'upload','layedit'],
+				function() {
+					$ = layui.jquery;
+					form = layui.form,
+					layer = layui.layer;
+					upload = layui.upload;
+					
+					 layedit = layui.layedit;
+					                   
+					layedit.set({
+						uploadImage: {
+							url: 'http://127.0.0.1:8082/demo/uplode/imgs2', //接口url
+							type: 'post' //默认post
+						}
+					 });
+								
+					layedit.build('name'); //建立编辑器
+					  editIndex = layedit.build('name'); //建立编辑器
+					
+					layedit.sync(editIndex);    
+					layui.form.on('submit(add)',
+						function(data) {
+
+							$.ajax({
+								type: "POST",
+								data: {
+									id: objectid,
+									titel:data.field.username,
+									content: layedit.getContent(editIndex),
+									imgUrl:imgUrl,
+									type:data.field.mshopetype,
+									money:data.field.money,
+								},
+								url: "http://localhost:8082/demo/luntan/up",
+								success: function(result) {
+									layer.alert("提交成功", {
+											icon: 6
+										},
+										function() {
+											// 获得frame索引
+											xadmin.close();
+											xadmin.father_reload();
+										});
+
+								}
+							});
+
+							return false;
+						});
+					upload.render({
+						elem: '#test5',
+						url: 'http://127.0.0.1:8082/demo/uplode/video',
+						accept: 'video', //视频
+						done: function(res) {
+							//如果上传失败
+							console.log(JSON.stringify(res));
+							if(res.code > 0) {
+								return layer.msg('上传失败');
+							}else{
+								imgUrl = res.data[0];
+							}
+							var url="http://127.0.0.1:8082/demo"+imgurl;
+							$(".my_video").html('<source class="source" src="' + url+ '" >');
+							//上传成功
+						}
+					});	
+					var uploadInst = upload.render({
+							elem: '#test1',
+							url: 'http://127.0.0.1:8082/demo/uplode/imgs',
+							before: function(obj) {
+								//预读本地文件示例，不支持ie8
+								obj.preview(function(index, file, result) {
+									$('#demo1').attr('src', result); //图片链接（base64）
+								});
+							},
+							done: function(res) {
+								//如果上传失败
+								console.log(JSON.stringify(res));
+								if(res.code > 0) {
+									return layer.msg('上传失败');
+								}else{
+									imgUrl = res.data[0];
+								}
+								//上传成功
+							},
+							error: function() {
+								//演示失败状态，并实现重传
+								var demoText = $('#demoText');
+								demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+								demoText.find('.demo-reload').on('click', function() {
+									uploadInst.upload();
+								});
+							}
+						});
+				});
+			var titel;
+			function child(d) {
+				objectid = d.id;
+				imgUrl=d.imgUrl;
+				
+				var  url = "http://127.0.0.1:8082/demo"+d.imgUrl;
+				$(".layui-upload-img").attr('src',url);
+				
+				
+				
+				$.ajax({
+					type: "POST",
+					url: "http://localhost:8082/demo/video/findAll",
+							
+					success: function(result) {
+						
+						
+						for(var i=0;i<result.data.length;i++){
+							console.log(result.data[i].titel);
+							 
+							
+						 $("#mshopetype").append("<option value="+result.data[i].titel+">"+result.data[i].titel+"</option>"); 
+						}
+						form.render();
+						layui.form.val("add", {
+							"username": d.titel,
+							"mshopetype": d.type,
+							"money": d.money,
+							
+						});
+						layedit.setContent(editIndex, d.content);
+					}
+				});
+							
+			}
+		</script>
+
+	</body>
+
+</html>

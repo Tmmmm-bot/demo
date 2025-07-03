@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>调车作业管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/xadmin.css">
+    <script src="../lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/xadmin.js"></script>
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="x-nav">
+            <span class="layui-breadcrumb">
+                <a href="">首页</a>
+                <a href="">调车管理</a>
+                <a>
+                    <cite>调车作业管理</cite></a>
+            </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+    </a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="operationType" placeholder="请输入作业类型" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach"><i
+                                    class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        <button class="layui-btn" id="btn_add">
+                            <i class="layui-icon">&#xe654;</i>新增
+                        </button>
+                    </div>
+                    <div class="layui-card-body ">
+                        <table class="layui-hide" id="demo" lay-filter="demo"></table>
+                        <script type="text/html" id="barDemo">
+                            <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+                            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['form', 'layer', 'table'], function () {
+        var table = layui.table;
+        var form = layui.form;
+
+        initTable(table);
+
+        //监听行工具事件
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data
+                , layEvent = obj.event;
+            if (layEvent === 'del') {
+                layer.confirm('确认删除该调车作业吗？', function (index) {
+                    del(data, obj, index);
+                });
+            } else if (layEvent === 'edit') {
+                open_up(data);
+            }
+        });
+
+        $("#btn_add").click(function () {
+            open_add();
+        });
+
+        form.on('submit(sreach)', function (data) {
+            var formData = data.field;
+            if (formData.operationType == "") {
+                initTable(table);
+            } else {
+                searchTable(table, formData.operationType);
+            }
+            return false;
+        });
+    });
+
+    function open_up(data) {
+        layer.open({
+            type: 2,
+            title: '修改调车作业',
+            skin: 'layui-layer-molv',
+            shadeClose: false,
+            shade: 0.8,
+            area: ['880px', '550px'],
+            content: './item1-detail-edit.html',
+            success: function (layero, index) {
+                var iframe = window['layui-layer-iframe' + index];
+                iframe.child(data);
+            }
+        });
+    }
+
+    function open_add() {
+        layer.open({
+            type: 2,
+            title: '新增调车作业',
+            skin: 'layui-layer-molv',
+            shadeClose: false,
+            shade: 0.8,
+            area: ['880px', '550px'],
+            content: './item1-detail_add.html',
+            success: function (layero, index) {
+                var iframe = window['layui-layer-iframe' + index];
+                iframe.child(0);
+            }
+        });
+    }
+
+    function del(data, obj, index) {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8082/demo/shunting-operation/del",
+            data: {
+                id: data.id
+            },
+            success: function (result) {
+                if(result.code === 0) {
+                    obj.del();
+                    layer.close(index);
+                    layer.msg('删除成功');
+                } else {
+                    layer.msg('删除失败');
+                }
+            }
+        });
+    }
+
+    function initTable(table) {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8082/demo/shunting-operation/findAll",
+            success: function (result) {
+                if(result.code === 0) {
+                    table.render({
+                        elem: '#demo'
+                        , cols: [[
+                            {field: 'id', title: 'ID', width: 80, sort: true}
+                            , {field: 'operationType', title: '作业类型', width: 120}
+                            , {field: 'startStationName', title: '起始站名称', width: 120}
+                            , {field: 'endStationName', title: '终到站名称', width: 120}
+                            , {field: 'plannedStartTime', title: '计划开始时间', width: 160}
+                            , {field: 'plannedEndTime', title: '计划结束时间', width: 160}
+                            , {field: 'status', title: '状态', width: 100, templet: function(d){
+                                if(d.status === 0) return '未开始';
+                                if(d.status === 1) return '进行中';
+                                if(d.status === 2) return '已完成';
+                                if(d.status === 3) return '已取消';
+                                return '未知';
+                            }}
+                            , {field: 'priority', title: '优先级', width: 100, templet: function(d){
+                                if(d.priority === 0) return '普通';
+                                if(d.priority === 1) return '重要';
+                                if(d.priority === 2) return '紧急';
+                                return '未知';
+                            }}
+                            , {field: 'operator', title: '作业人员', width: 120}
+                            , {field: 'carCount', title: '调车数量', width: 100}
+                            , {field: 'operationContent', title: '作业内容', width: 150}
+                            , {field: 'safetyCheck', title: '安全检查', width: 100, templet: function(d){
+                                return d.safetyCheck === 1 ? '已检查' : '未检查';
+                            }}
+                            , {field: 'remark', title: '备注'}
+                            , {fixed: 'right', title: "操作", align: 'center', toolbar: '#barDemo', width: 150}
+                        ]]
+                        , data: result.data
+                        , skin: 'line'
+                        , even: true
+                        , page: true
+                        , limits: [5, 10, 20]
+                        , limit: 10
+                    });
+                }
+            }
+        });
+    }
+
+    function searchTable(table, operationType) {
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8082/demo/shunting-operation/findAll",
+            success: function (result) {
+                if(result.code === 0) {
+                    var arr = result.data.filter(function(item) {
+                        return item.operationType && item.operationType.indexOf(operationType) !== -1;
+                    });
+                    table.render({
+                        elem: '#demo'
+                        , cols: [[
+                            {field: 'id', title: 'ID', width: 80, sort: true}
+                            , {field: 'operationType', title: '作业类型', width: 120}
+                            , {field: 'startStationName', title: '起始站名称', width: 120}
+                            , {field: 'endStationName', title: '终到站名称', width: 120}
+                            , {field: 'plannedStartTime', title: '计划开始时间', width: 160}
+                            , {field: 'plannedEndTime', title: '计划结束时间', width: 160}
+                            , {field: 'status', title: '状态', width: 100, templet: function(d){
+                                if(d.status === 0) return '未开始';
+                                if(d.status === 1) return '进行中';
+                                if(d.status === 2) return '已完成';
+                                if(d.status === 3) return '已取消';
+                                return '未知';
+                            }}
+                            , {field: 'priority', title: '优先级', width: 100, templet: function(d){
+                                if(d.priority === 0) return '普通';
+                                if(d.priority === 1) return '重要';
+                                if(d.priority === 2) return '紧急';
+                                return '未知';
+                            }}
+                            , {field: 'operator', title: '作业人员', width: 120}
+                            , {field: 'carCount', title: '调车数量', width: 100}
+                            , {field: 'operationContent', title: '作业内容', width: 150}
+                            , {field: 'safetyCheck', title: '安全检查', width: 100, templet: function(d){
+                                return d.safetyCheck === 1 ? '已检查' : '未检查';
+                            }}
+                            , {field: 'remark', title: '备注'}
+                            , {fixed: 'right', title: "操作", align: 'center', toolbar: '#barDemo', width: 150}
+                        ]]
+                        , data: arr
+                        , skin: 'line'
+                        , even: true
+                        , page: true
+                        , limits: [5, 10, 20]
+                        , limit: 10
+                    });
+                }
+            }
+        });
+    }
+</script>
+</html>

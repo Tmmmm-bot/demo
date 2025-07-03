@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <title>铁路调度管理子系统</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body class="bg04">
+<header class="header">
+    <h3>铁路调度管理子系统</h3>
+</header>
+<div class="msg-box">
+    <p>等待指令中</p>
+</div>
+
+<div class="wrapper">
+    <div class="container-fluid">
+        <div class="row fill-h">
+            <div class="col-lg-6 fill-h">
+                <div class="xpanel-wrapper xpanel-wrapper-1">
+                    <div class="xpanel">
+                        <h4 class="text-center text-info">数据库实时数据</h4>
+                        <div id="monitor-data" class="mt-3">
+                            <p class="text-center" style="color: white;">
+                                数据加载中...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 fill-h">
+                <div class="xpanel-wrapper xpanel-wrapper-2">
+                    <div class="xpanel">
+                        <h4 class="text-center text-info">乘务组信息显示</h4>
+                        <video id="remoteVideo" autoplay playsinline class="mt-3" style="height: calc(100% - 40px); width: 100%;"></video>
+                    </div>
+                </div>
+                <img src="../js/img/OIP.png" alt="补充图片" style="width: 100%; height: 50%;" />
+
+            </div>
+
+            <div class="col-lg-3 fill-h">
+                <div class="xpanel-wrapper xpanel-wrapper-3">
+                    <div class="xpanel">
+                        <h4 class="text-center text-info">系统状态</h4>
+                        <div class="status-panel mt-3">
+                            <p class="text-center" style="color: white;">
+                                等待状态更新...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="xpanel-wrapper xpanel-wrapper-3">
+                    <div class="xpanel scroll">
+                        <h4 class="text-center text-info">数据库连接状态</h4>
+                        <div id="database-data" class="mt-3">
+                            <p class="text-center" style="color: white;">
+                                正在连接数据库...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="xpanel-wrapper xpanel-wrapper-3">
+                    <div class="xpanel">
+                        <h4 class="text-center text-info">控制中心</h4>
+                        <div class="task-control-container mt-3">
+                            <div class="btn-group-vertical w-100">
+                                <button class="btn btn-primary mb-2" onclick="sendCommand('START_SYSTEM')">开始系统</button>
+                                <button class="btn btn-warning mb-2" onclick="sendCommand('PAUSE_SYSTEM')">关闭系统</button>
+                                <button class="btn btn-danger mb-2" onclick="sendCommand('START_SCHEDULING')">开始调度</button>
+                                <button class="btn btn-info" onclick="sendCommand('RESTART_SYSTEM')">重启系统</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    /********** 消息盒子 ****************/
+    var statusTimeout = setInterval(function() { msg_box("等待命令中") }, 5000);
+
+    function msg_box(action) {
+        document.querySelector('.msg-box').innerHTML = action;
+        document.querySelector('.msg-box').style.display = 'block';
+        // clearTimeout(statusTimeout);
+    }
+
+    /********** 更新最新建议 ****************/
+    // 获取最新数据
+    function fetchData() {
+        fetch('https://smarttilleye.59888888.xyz/decision/findLatestProcessed')
+            .then(response => response.json())
+            .then(data => {
+                if(data.code === 0) {
+                    // 更新概述
+                    const infoBox = document.getElementById('info-content');
+                    infoBox.innerHTML = `${data.data.message.replace(/\n/g, '<br>')}`;
+                    // 更新建议
+                    const adviceBox = document.getElementById('advice-content');
+                    adviceBox.innerHTML = `${data.data.result.replace(/\n/g, '<br>')}`;
+                }
+            })
+            .catch(error => {
+                msg_box("建议加载失败，请稍后重试");
+                console.error('获取数据失败:', error);
+                document.getElementById('advice-content').innerHTML = '数据加载失败，请稍后重试';
+            });
+    }
+
+    // 每5秒更新一次数据
+    setInterval(fetchData, 5000);
+    // 初始加载
+    fetchData();
+
+    /********** WEBRTC ****************/
+    const video = document.getElementById('remoteVideo');
+    let ws = null;
+    let pc = null;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
+    const reconnectDelay = 2000; // 2 seconds
+
+    function connectWebSocket() {
+        ws = new WebSocket(`wss://${window.location.host}/signaling`);
+
+        ws.onopen = () => {
+            msg_box("WEBRTC WS 连接成功");
+            console.log('WebSocket connected');
+            reconnectAttempts = 0;
+        };
+
+        ws.onmessage = async (event) => {
+            const message = JSON.parse(event.data);
+            msg_box("收到WEBRTC WS消息:" + message.type)
+            console.log('Received message:', message.type);
+
+            if (message.type === 'offer') {
+                await handleOffer(message);
+            }
+        };
+
+        ws.onclose = (event) => {
+            console.log('WebSocket closed, reconnecting...' + event);
+            if (pc) {
+                pc.close();
+                pc = null;
+            }
+            video.srcObject = null;
+            setTimeout(connectWebSocket, reconnectDelay);
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            ws.close();
+        };
+    }
+
+    async function handleOffer(offer) {
+        try {
+            // 清理之前的连接
+            if (pc) {
+                pc.close();
+                pc = null;
+            }
+
+            // 创建新连接
+            pc = new RTCPeerConnection();
+
+            pc.ontrack = (e) => {
+                if (e.track.kind === 'video') {
+                    video.srcObject = e.streams[0];
+                }
+            };
+
+            pc.oniceconnectionstatechange = () => {
+                console.log('ICE connection state:', pc.iceConnectionState);
+                if (pc.iceConnectionState === 'disconnected') {
+                    console.log('ICE disconnected, requesting reconnect');
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({ type: 'reconnect' }));
+                    }
+                }
+            };
+
+            await pc.setRemoteDescription(
+                new RTCSessionDescription(offer));
+
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+
+            ws.send(JSON.stringify({
+                type: 'answer',
+                sdp: pc.localDescription.sdp
+            }));
+        } catch (error) {
+            msg_box("WEBRTC WS 连接失败：" + error);
+            console.error('Error handling offer:', error);
+        }
+    }
+
+    // 初始连接
+    connectWebSocket();
+
+    /********** 连接控制websocket ****************/
+    let ws_control;
+    let reconnectAttempts_control = 0;
+    const maxReconnectAttempts_control = 5;
+    const reconnectDelay_control = 3000; // 3秒重连间隔
+
+    function connectWebSocket_control() {
+        ws_control = new WebSocket(`wss://${window.location.host}/ws/controller`);
+
+        // 设置事件监听
+        ws_control.onopen = () => {
+            msg_box("控制WS连接成功");
+            console.log('WebSocket连接建立');
+            reconnectAttempts_control = 0; // 重置重试次数
+        };
+
+        ws_control.onmessage = (event) => {
+            // 可添加响应处理逻辑
+            msg_box("收到控制WS消息:" + event.data);
+            console.log('收到消息:', event.data);
+        };
+
+        ws_control.onclose = (event) => {
+            msg_box(`连接关闭 code:${event.code} reason:${event.reason}`)
+            console.log(`连接关闭 code:${event.code} reason:${event.reason}`);
+            handleReconnect();
+        };
+
+        ws_control.onerror = (error) => {
+            msg_box("控制WS发生错误：" + error);
+            console.error('WebSocket Error:', error);
+            ws_control.close(); // 触发onclose处理
+        };
+    }
+
+    function handleReconnect() {
+        if(reconnectAttempts_control < maxReconnectAttempts_control) {
+            setTimeout(() => {
+                msg_box(`尝试重连第 ${reconnectAttempts_control + 1} 次`)
+                console.log(`尝试重连第 ${reconnectAttempts_control + 1} 次`);
+                reconnectAttempts_control++;
+                connectWebSocket_control();
+            }, reconnectDelay_control);
+        } else {
+            msg_box("重连失败")
+            console.log('重连失败');
+        }
+    }
+
+    function sendCommand(command) {
+        if(ws_control.readyState === WebSocket.OPEN) {
+            ws_control.send(command);
+        } else {
+            console.warn('尝试发送命令时连接不可用');
+        }
+        msg_box(`已发送命令: ${command}`)
+        console.log(`命令已发送: ${command}`);
+    }
+
+    // 初始化连接
+    connectWebSocket_control();
+
+    /********** 数据库数据推送 ****************/
+    const databaseDataElement = document.getElementById('database-data');
+    const databaseWs = new WebSocket(`ws://${window.location.host}/data-feed`);
+
+    databaseWs.onopen = () => {
+        console.log('Database WebSocket connected');
+    };
+
+    databaseWs.onmessage = (event) => {
+        const data = event.data;
+        databaseDataElement.innerHTML = `<p>${data.replace(/\n/g, '<br>')}</p>`;
+    };
+
+    databaseWs.onclose = (event) => {
+        console.log('Database WebSocket closed, reconnecting...');
+        setTimeout(() => {
+            databaseWs = new WebSocket(`ws://${window.location.host}/data-feed`);
+        }, 5000);
+    };
+
+    databaseWs.onerror = (error) => {
+        console.error('Database WebSocket error:', error);
+    };
+</script>
+</body>
+</html>
