@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: root
+    username: root
+    url: jdbc:mysql://localhost:3306/demo?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+
+
+  jpa:
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+custom:
+      flag: true
+getimg:
+      pic: /file/
+
+server:
+  servlet:
+    context-path: /demo
+
+  port: 8082
+
+
