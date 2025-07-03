@@ -1,0 +1,108 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	{
+		"path": "pages/login/login",
+		"style": {
+			"navigationBarTitleText": "登录",
+			"navigationBarBackgroundColor":"#3D9140",
+			"navigationBarTextStyle":"white",
+			"app-plus": {
+	            "bounce": "none" ,//关闭窗口回弹效果
+				"softinputNavBar":"none"
+	        }
+		}
+	},
+	{
+		"path": "pages/tab/item3",
+		"style": {
+			 "navigationBarTitleText": "调度命令",
+			 "enablePullDownRefresh": false
+		}
+	},
+		{
+			"path": "pages/tab/item4",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle":"black",
+				"navigationBarTitleText": "作业"
+			}
+		},
+		{
+			"path": "pages/tab/item2",
+			"style": {
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle":"black",
+				"navigationBarTitleText": "作业"
+			}
+		},
+		
+		
+		
+		{
+			"path": "pages/login/register",
+			"style": {
+				"navigationBarTitleText": "注册账号",
+				"navigationBarBackgroundColor":"#3D9140",
+				"navigationBarTextStyle":"white",
+				"app-plus": {
+				    "bounce": "none" ,//关闭窗口回弹效果
+					"softinputNavBar":"none"
+				}
+			}
+		}
+		
+        ,{
+            "path" : "pages/user/feedback/feedback",
+            "style" : {
+            	"navigationBarTitleText": "意见反馈",
+            	"app-plus":{
+            		"bounce":"none"
+            	}
+            }
+            
+        }
+        ,{
+		    "path" : "pages/tab/item1",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "动车组实时动态",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+       
+    ],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText" : "",
+		"navigationBarBackgroundColor" : "#ffffff",
+		"backgroundColor" : "#ffffff",
+		"backgroundColorTop":"#ffffff",
+		"backgroundColorBottom":"#ffffff"
+	},
+	"tabBar": {
+		"color": "#333333",
+		"selectedColor": "#2980b9",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [
+			{
+				"pagePath": "pages/tab/item1",
+				"text": "人员"
+			},
+			{
+				"pagePath": "pages/tab/item2",
+				"text": "动态"
+			},
+			{
+				"pagePath": "pages/tab/item3",
+				"text": "命令"
+			},
+			
+			{
+				"pagePath": "pages/tab/item4",
+				"text": "作业"
+			}
+		]
+	}
+}

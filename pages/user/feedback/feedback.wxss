@@ -1,0 +1,8 @@
+
+page {
+    background-color: #EFEFF4;
+}
+.input-view {
+    font-size: 28rpx;
+}
+

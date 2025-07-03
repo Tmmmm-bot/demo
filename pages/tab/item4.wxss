@@ -1,0 +1,276 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+page {
+  background-color: #f5f5f5;
+  height: 100%;
+}
+.container {
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+.page-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 60rpx 40rpx 40rpx 40rpx;
+  text-align: center;
+}
+.page-header .page-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+.stats-section {
+  margin: 30rpx 30rpx;
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+.stats-section .stats-grid {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+.stats-section .stats-grid .stat-item {
+  text-align: center;
+  flex: 0 0 14%;
+  padding: 10rpx;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+.stats-section .stats-grid .stat-item:active {
+  -webkit-transform: scale(0.95);
+          transform: scale(0.95);
+}
+.stats-section .stats-grid .stat-item.active {
+  background-color: #e3f2fd;
+}
+.stats-section .stats-grid .stat-item.active .stat-number {
+  color: #1976d2;
+}
+.stats-section .stats-grid .stat-item.active .stat-label {
+  color: #1976d2;
+}
+.stats-section .stats-grid .stat-item.all-item.active {
+  background-color: #e8f5e8;
+}
+.stats-section .stats-grid .stat-item.all-item.active .stat-number {
+  color: #2e7d32;
+}
+.stats-section .stats-grid .stat-item.all-item.active .stat-label {
+  color: #2e7d32;
+}
+.stats-section .stats-grid .stat-item .stat-number {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #2980b9;
+  margin-bottom: 8rpx;
+  transition: color 0.3s ease;
+}
+.stats-section .stats-grid .stat-item .stat-label {
+  font-size: 26rpx;
+  color: #7f8c8d;
+  transition: color 0.3s ease;
+}
+.operation-section {
+  margin: 0 30rpx;
+}
+.operation-section .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.operation-section .section-header .section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2c3e50;
+}
+.operation-section .section-header .filter-status {
+  display: flex;
+  align-items: center;
+}
+.operation-section .section-header .filter-status .filter-text {
+  font-size: 26rpx;
+  color: #7f8c8d;
+  margin-right: 12rpx;
+}
+.operation-section .section-header .filter-status .clear-filter {
+  font-size: 26rpx;
+  color: #7f8c8d;
+  text-decoration: underline;
+}
+.operation-section .operation-list .operation-item {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+.operation-section .operation-list .operation-item:active {
+  -webkit-transform: scale(0.98);
+          transform: scale(0.98);
+  transition: all 0.2s ease;
+}
+.operation-section .operation-list .operation-item .operation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.operation-section .operation-list .operation-item .operation-header .operation-type {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2c3e50;
+}
+.operation-section .operation-list .operation-item .operation-header .priority-badge {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #ffffff;
+}
+.operation-section .operation-list .operation-item .operation-header .priority-badge.normal {
+  background-color: #95a5a6;
+}
+.operation-section .operation-list .operation-item .operation-header .priority-badge.important {
+  background-color: #f39c12;
+}
+.operation-section .operation-list .operation-item .operation-header .priority-badge.urgent {
+  background-color: #e74c3c;
+}
+.operation-section .operation-list .operation-item .operation-content {
+  margin-bottom: 20rpx;
+}
+.operation-section .operation-list .operation-item .operation-content .content-text {
+  font-size: 28rpx;
+  color: #34495e;
+  line-height: 1.5;
+}
+.operation-section .operation-list .operation-item .route-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+.operation-section .operation-list .operation-item .route-info .start-station, .operation-section .operation-list .operation-item .route-info .end-station {
+  font-size: 28rpx;
+  color: #27ae60;
+  font-weight: 500;
+}
+.operation-section .operation-list .operation-item .route-info .arrow {
+  margin: 0 12rpx;
+  font-size: 26rpx;
+  color: #7f8c8d;
+}
+.operation-section .operation-list .operation-item .time-info {
+  margin-bottom: 16rpx;
+}
+.operation-section .operation-list .operation-item .time-info .time-label {
+  font-size: 26rpx;
+  color: #7f8c8d;
+}
+.operation-section .operation-list .operation-item .time-info .time-text {
+  font-size: 26rpx;
+  color: #34495e;
+}
+.operation-section .operation-list .operation-item .operation-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+.operation-section .operation-list .operation-item .operation-details .operator, .operation-section .operation-list .operation-item .operation-details .car-count {
+  font-size: 26rpx;
+  color: #7f8c8d;
+}
+.operation-section .operation-list .operation-item .operation-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20rpx;
+  border-top: 2rpx solid #ecf0f1;
+}
+.operation-section .operation-list .operation-item .operation-footer .status {
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+.operation-section .operation-list .operation-item .operation-footer .status.pending {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}
+.operation-section .operation-list .operation-item .operation-footer .status.executing {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+.operation-section .operation-list .operation-item .operation-footer .status.completed {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+.operation-section .operation-list .operation-item .operation-footer .status.cancelled {
+  background-color: #ffebee;
+  color: #c62828;
+}
+.operation-section .operation-list .operation-item .operation-footer .safety-check {
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+}
+.operation-section .operation-list .operation-item .operation-footer .safety-check.checked {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+.operation-section .operation-list .operation-item .operation-footer .safety-check.unchecked {
+  background-color: #ffebee;
+  color: #c62828;
+}
+.feedback-section {
+  margin: 40rpx 30rpx 20rpx 30rpx;
+}
+.feedback-section .feedback-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  border-radius: 25rpx;
+  height: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 25rpx rgba(255, 107, 107, 0.3);
+  border: none;
+}
+.feedback-section .feedback-btn:active {
+  -webkit-transform: scale(0.95);
+          transform: scale(0.95);
+  transition: all 0.2s ease;
+}
+.feedback-section .feedback-btn .feedback-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+.feedback-section .feedback-btn .feedback-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ffffff;
+}

@@ -1,0 +1,46 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/tab/item3",
+    "pages/tab/item4",
+    "pages/tab/item2",
+    "pages/login/register",
+    "pages/user/feedback/feedback",
+    "pages/tab/item1"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#ffffff",
+    "backgroundColorTop": "#ffffff",
+    "backgroundColorBottom": "#ffffff"
+  },
+  "tabBar": {
+    "color": "#333333",
+    "selectedColor": "#2980b9",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/tab/item1",
+        "text": "人员"
+      },
+      {
+        "pagePath": "pages/tab/item2",
+        "text": "动态"
+      },
+      {
+        "pagePath": "pages/tab/item3",
+        "text": "命令"
+      },
+      {
+        "pagePath": "pages/tab/item4",
+        "text": "作业"
+      }
+    ]
+  },
+  "permission": {},
+  "usingComponents": {}
+}
